@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import LoginDetails from "../context/LoginContext";
+import {LoginDetails} from "../context/UserContext";
 import "../assets/css/homepage.css";
 import { FaBed, FaAmbulance, FaMedkit, FaWheelchair, FaFlask, FaPhoneAlt } from "react-icons/fa"; // Import React Icons
 

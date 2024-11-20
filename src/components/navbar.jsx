@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import LoginDetails from "../context/LoginContext";
+import {LoginDetails} from "../context/UserContext";
 
 const Navbar = () => {
 	const { loggedIn, user } = useContext(LoginDetails);

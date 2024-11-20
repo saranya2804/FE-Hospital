@@ -1,78 +1,135 @@
+import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import React, { useEffect, useState, useContext } from "react";
-
-import AppointmentCard from "../components/AppointmentCards";
-
-import LoginDetails from "../context/LoginContext";
-import Navbar from "../components/navbar";
-
 import "../assets/css/main.css";
 
 const LandingPage = () => {
-	const { user, loggedIn, baseURL } = useContext(LoginDetails);
-	const [appointments, setAppointments] = useState([]);
-	const [loading, setLoading] = useState(false);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [userId, setUserId] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("uid")) || null;
+    } catch (err) {
+      console.error("Error parsing localStorage:", err);
+      return null;
+    }
+  });
 
-	useEffect(() => {
-		if (loggedIn) {
-			setLoading(true);
-			const fetchAppointments = async () => {
-				await Axios.get(`${baseURL}/user/getApt/${user._id}`)
-					.then(({ data: foundAppointments }) => {
-						console.info(
-							`Appointments were found for user with name:${user.name}`
-						);
-						setAppointments(foundAppointments);
-						setTimeout(() => {
-							setLoading(false);
-						}, 1000);
-					})
-					.catch((error) => {
-						console.error(
-							`Some error occured while fetching Appoinment for user :${user.name}`,
-							error
-						);
-					});
-			};
-			fetchAppointments();
-		}
-		// eslint-disable-next-line
-	}, [user]);
+  const fetchAppointments = async () => {
+    if (!userId) {
+      setError("User not logged in. Please log in first.");
+      setAppointments([]);
+      return;
+    }
 
-	const BookMore = () => {
-		window.location.href = "/appointments";
-	};
+    setLoading(true);
+    setError("");
 
-	const onLogout = () => {
-		localStorage.clear();
-		window.location.href = "/";
-	};
-	const renderAppointments = appointments.map((appointment, index) => {
-		return <AppointmentCard appointment={appointment} key={index} />;
-	});
+    try {
+      // Fetch patient info by userId
+      const { data: patientData } = await Axios.get(
+        `http://localhost:8080/patients/byUserId/${userId}`
+      );
 
-	return !loading ? (
-		<React.Fragment>
-			<div id={"apt-container"}>
-				<Navbar />
-				<br />
-				<h1 id={"welcome-head"}>Welcome,&nbsp;{user.name}!</h1>
-				<p id={"Appointment-sub-head"}>
-					Get all your pending appointments here.
-				</p>
-				<button id={"apt-bookmore-btn"} onClick={BookMore}>
-					Book More
-				</button>
-				<button onClick={onLogout} id={"logout-btn"}>
-					Logout
-				</button>
-				<br />
-				<br />
-				<div id={"appointments-cards"}>{renderAppointments}</div>
-			</div>
-		</React.Fragment>
-	) : (
-		<Loader />
-	);
+      const patientId = patientData?.id;
+      if (!patientId) {
+        setError("No patient found for the given user ID.");
+        setAppointments([]);
+        return;
+      }
+
+      // Fetch appointments by patientId
+      const { data: appointmentsData } = await Axios.get(
+        `http://localhost:8080/api/appointments/byPatientId/${patientId}`
+      );
+
+      // Fetch doctor details for each appointment
+      const updatedAppointments = await Promise.all(
+        appointmentsData.map(async (appointment) => {
+          const { doctorId, appointmentDate } = appointment;
+
+          // Fetch doctor information by doctorId (we will just display doctorId here)
+          appointment.doctorName = doctorId || "Unknown";
+
+          // Format the appointment date
+          appointment.date = appointmentDate
+            ? new Date(appointmentDate).toLocaleDateString()
+            : "Date not available";
+
+          return appointment;
+        })
+      );
+
+      setAppointments(updatedAppointments || []);
+      if (!appointmentsData.length) {
+        setError("No appointments found.");
+      }
+    } catch (err) {
+      console.error("Error fetching appointments:", err);
+      setError(
+        err.response?.data?.message ||
+        "Unable to fetch appointments. Please try again later."
+      );
+      setAppointments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [userId]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
+
+  // Inline AppointmentCard Component
+  const AppointmentCard = ({ appointment }) => {
+    const { id, date, doctorName, status } = appointment || {};
+
+    return (
+      <div className="appointment-card">
+        <h3>Appointment ID: {id || "N/A"}</h3>
+        <p>Date: {date || "Date not available"}</p>
+        <p>Doctor ID: {doctorName || "Unknown"}</p> {/* Displaying doctorId instead of name */}
+        <p>Status: {status || "Pending"}</p>
+      </div>
+    );
+  };
+
+  return (
+    <div id="apt-container">
+      <div className="navbar">
+        <h1>My Appointments</h1>
+      </div>
+      <h1>Welcome, {userId ? "User" : "Guest"}!</h1>
+      <p>Get all your pending appointments here.</p>
+
+      <div className="actions">
+        <button onClick={() => (window.location.href = "/appointments")}>
+          Book More
+        </button>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
+
+      {loading && <p>Loading...</p>}
+      {error && <p className="error">{error}</p>}
+
+      {!loading && !error && appointments.length === 0 && (
+        <p>No appointments found. Book an appointment to get started.</p>
+      )}
+
+      {!loading && !error && appointments.length > 0 && (
+        <div>
+          {appointments.map((appointment) => (
+            <AppointmentCard key={appointment.id} appointment={appointment} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
+
 export default LandingPage;

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import "./login.css"; // Ensure this path is correct
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/imgs/Doctor_20.png'
+import "./login.css";
+
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [response, setResponse] = useState("");
@@ -21,39 +21,36 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:8080/api/auth/login", formData);
-      setResponse(res.data.message); // Success message from ApiResponse
+      console.log(res)
+      setResponse(res.data.message); 
       localStorage.setItem("token", res.data.token); // Store token for session
+      localStorage.setItem("uid", JSON.stringify(res.data.uid));
+      console.log(localStorage.getItem("token"))
+      console.log("user", JSON.stringify(res.data.uid))
+      const userRole = localStorage.getItem("token"); // Assuming role is returned in the response
       
-      const userRole = localStorage.getItem("token"); // Assuming the role is in the `data` field of the response
-      console.log(userRole)
-      if (userRole == "DOCTOR") {
-        console.log("hi")
+      if (userRole === "DOCTOR") {
         navigate("/doctor");
       } else if (userRole === "PATIENT") {
-        navigate("/appointmentpage");
+        navigate("/appointments");
       }
-      
+
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
       setResponse("");
     }
   };
-  
-  
 
   return (
     <div id="super-container">
       <div className="parent-container">
         <div id="login-container">
-          <img
-            src= "src\assets\imgs\Doctor_20.png" // Replace with your logo or image
-            alt="App Logo"
-          />
+          <img src="src/assets/imgs/Doctor_20.png" alt="App Logo" />
           {error && <p id="Incorrect-credentials">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="input-container">
-              <i className="icon">&#128100;</i> {/* Optional icon */}
+              <i className="icon">&#128100;</i>
               <input
                 type="text"
                 name="username"
@@ -64,7 +61,7 @@ const Login = () => {
               />
             </div>
             <div className="input-container">
-              <i className="icon">&#128274;</i> {/* Optional icon */}
+              <i className="icon">&#128274;</i>
               <input
                 type="password"
                 name="password"
@@ -77,9 +74,7 @@ const Login = () => {
             <button type="submit">Login</button>
           </form>
           <span className="spantext">New User?</span>
-          <button id="lastbtn" onClick={navigateToRegister}>
-            Register
-          </button>
+          <button id="lastbtn" onClick={navigateToRegister}>Register</button>
         </div>
       </div>
     </div>

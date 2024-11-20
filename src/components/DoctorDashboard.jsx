@@ -50,7 +50,7 @@ const DoctorDashboard = () => {
       </div>
       <div className="DashboardContent">
         <div className="title">
-          <h2>Welcome Dr."name"!</h2>
+          <h2>Welcome Dr!</h2>
         </div>
       <div className="TotalPatients">
         <h3>Total Patients</h3>

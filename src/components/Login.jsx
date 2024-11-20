@@ -1,8 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import "./login.css"; // Ensure this path is correct
+import "./login.css";
 import { useNavigate } from "react-router-dom";
-import logo from '../assets/imgs/Doctor_20.png';
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -22,17 +21,10 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:8080/api/auth/login", formData);
-      setResponse(res.data.message);
-      localStorage.setItem("token", res.data.token);
-
-      const userRole = localStorage.getItem("token");
-      if (userRole === "DOCTOR") {
-        navigate("/doctor");
-      } else if (userRole === "PATIENT") {
-        navigate("/appointmentpage");
-      }
-      
+      setResponse(res.data.message); // Success message from ApiResponse
+      localStorage.setItem("token", res.data.token); // Store token for session
       setError("");
+      navigate("/dashboard"); // Redirect to dashboard after successful login
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
       setResponse("");
@@ -41,30 +33,53 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <legend>Login</legend>
-      <img src={logo} alt="App Logo" />
+      <fieldset>
+        <legend>Login</legend>
+
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+         
+
+          <button type="submit">Login</button>
+        </form>
+
+        <span
+          className="register-link"
+          onClick={navigateToRegister}
+          style={{
+            color: "darkblue",
+            cursor: "pointer",
+            textDecoration: "underline",
+            padding: "2px",
+          }}
+        >
+          New User?
+        </span>
+      </fieldset>
+
+      {response && <p className="success">{response}</p>}
       {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Enter Username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-      <p>New User?</p>
-      <button onClick={navigateToRegister}>Register</button>
     </div>
   );
 };

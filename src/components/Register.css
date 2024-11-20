@@ -1,144 +1,137 @@
-/* General Styling */
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
+/* Color variables for easy maintenance */
+:root {
+  --dark-gray: #1e1e1e;
+  --medium-gray: #333;
+  --light-gray: #444;
+  --blue: #007BFF;
+  --dark-blue: #0056b3;
+  --text-light: #dcdcdc;
+  --text-white: #ffffff;
+  --success-green: lightgreen;
+  --error-red: red;
+}
+body{
   width: 100%;
-  height: 100%;
 }
 
+/* General container styles for Register */
+/* General container styles for Register */
 .register-container {
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f4f4f4;
+  max-width: 900px;          /* Increased max-width to 800px */
+  width: 100%;               /* Ensure responsiveness */
+  padding: 20px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5); /* Slightly less transparent like login */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
+  align-items: center; /* Centers the content */
 }
 
-.register-container fieldset {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.register-container legend {
-  font-size: 20px;
+/* Heading styles */
+.register-container h2 {
+  color: var(--dark-gray);
+  margin-bottom: 20px;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 15px;
 }
 
-.register-container input,
+/* Legend inside the register container */
+.register-container legend {
+  color: var(--dark-gray);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Input field styles */
+.register-container input[type="text"],
+.register-container input[type="password"],
+.register-container input[type="number"],
+.register-container input[type="email"],
 .register-container select {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #ddd;
+  width: 90%;                /* Reduced width to 80% of the container */
+  max-width: 800px;          /* Limits input width */
+  padding: 12px;             /* Increased padding for more space */
+  margin: 10px 0;            /* Even vertical spacing */
+  border: 1px solid var(--light-gray);
   border-radius: 5px;
-  outline: none;
-  margin-bottom: 15px;
+  background-color: var(--medium-gray);
+  color: var(--text-white);
+  font-size: 16px;           /* Slightly increased font size */
   box-sizing: border-box;
-  transition: border-color 0.3s;
 }
 
-.register-container input:focus,
+.register-container input[type="text"]:focus,
+.register-container input[type="password"]:focus,
+.register-container input[type="number"]:focus,
+.register-container input[type="email"]:focus,
 .register-container select:focus {
-  border-color: #4CAF50;
+  border-color: var(--blue); /* Focus effect */
+  outline: none;
 }
 
+/* Button styles */
 .register-container button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px;
-  font-size: 16px;
+  padding: 12px 20px;         /* Adjusted padding */
+  background-color: var(--dark-blue);
+  color: var(--text-white);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
-  margin-bottom: 15px;
-  transition: background-color 0.3s ease-in-out;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  width: 90%;                 /* Same width as the inputs */
+  max-width: 400px;           /* Limits button width */
   box-sizing: border-box;
 }
 
 .register-container button:hover {
-  background-color: #45a049;
+  background-color: var(--blue);
 }
 
-.register-container .login-link {
+/* Success and error message styles */
+.register-container p {
   font-size: 14px;
-  color: #777;
-  text-align: center;
   margin-top: 10px;
-  cursor: pointer;
-  text-decoration: underline;
 }
 
-/* Responsiveness for Mobile */
+.register-container p.success {
+  color: var(--success-green);
+}
+
+.register-container p.error {
+  color: var(--error-red);
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
-  .register-container fieldset {
-      width: 90%;
-  }
-<<<<<<< HEAD
-  
-  /* General container styles for Register */
   .register-container {
-    max-width: 700px;
-    margin: auto;
-    padding: 20px;
-    text-align: center;
-    background-color: rgba(255, 254, 254, 0.8);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 15px; /* Reduced padding for smaller screens */
   }
-  
-  /* Heading styles */
+
   .register-container h2 {
-    color: var(--dark-gray);
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 20px; /* Slightly smaller font for smaller screens */
   }
-  .register-container legend{
-    color: var(--dark-gray);
-  }
-  /* Form label styles */
-  
-  /* Input field styles */
+
+  /* Adjust input fields */
   .register-container input[type="text"],
   .register-container input[type="password"],
   .register-container input[type="number"],
   .register-container input[type="email"],
   .register-container select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid rgb(0, 0, 0);
-    border-radius: 4px;
-    background-color: rgb(188, 222, 255);
-    color: var(--text-white);
-    font-size: 14px;
-    box-sizing: border-box;
-=======
-
-  .register-container input,
-  .register-container select {
-      font-size: 14px;
-      padding: 10px;
->>>>>>> 5045227e818c97e606b3d772705652d996386363
+    padding: 10px; /* Reduce padding for smaller screens */
+    font-size: 14px; /* Smaller font size */
+    width: 90%; /* Slightly wider inputs on small screens */
+    max-width: 300px; /* Limits the input width */
   }
 
+  /* Adjust button */
   .register-container button {
-      font-size: 14px;
-      padding: 10px;
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 14px; /* Smaller font size */
+    width: 90%; /* Same width as inputs */
+    max-width: 300px; /* Limits button width */
   }
 }

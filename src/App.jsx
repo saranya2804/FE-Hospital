@@ -16,7 +16,6 @@ import Register from './components/Register';
 const App = () => {
 	const [user, setUser] = useState({});
 	const [loggedIn, setLoggedIn] = useState(false);
-
 	useEffect(() => {
 		const savedUser = localStorage.getItem("user");
 		if (!loggedIn && savedUser) {
@@ -29,7 +28,7 @@ const App = () => {
 	return (
 		<LoginDetails.Provider value={{ loggedIn, user, setUser }}>
 			<Router>
-				<div>
+				
 					<Routes> {/* Replace Switch with Routes */}
 						<Route path={"/"} element={<HomePage />} />
 						<Route path={"/login"} element={<Login />} />
@@ -38,9 +37,9 @@ const App = () => {
 						<Route path={"/appointmentpage"} element={<LandingPage />} />
 						<Route path={"/404"} element={<h1>Page not found</h1>} />
 						<Route path={"/*"} element={<Navigate to={"/404"} />} /> {/* Updated to Navigate */}
-            <Route path="/doctor" element={<DoctorDashboard/>}/>
+            			<Route path="/doctor" element={<DoctorDashboard/>}/>
 					</Routes>
-				</div>
+				
 			</Router>
 		</LoginDetails.Provider>
 	);

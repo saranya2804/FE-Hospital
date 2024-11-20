@@ -95,7 +95,7 @@ const Register = () => {
         <br />
         <span
           className="login-link"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
           style={{
             color: "darkblue",
             cursor: "pointer",

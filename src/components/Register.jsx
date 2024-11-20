@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
@@ -11,6 +11,12 @@ const Register = () => {
   const ref3 = useRef(null); // Confirm Password
   const ref4 = useRef(null); // Role (dropdown)
   const ref5 = useRef(null); // Email
+  const specializationRef = useRef(null); // Specialization (dropdown)
+  const [isDoctor, setIsDoctor] = useState(false); // Track if Doctor is selected
+
+  const handleRoleChange = (event) => {
+    setIsDoctor(event.target.value === "DOCTOR");
+  };
 
   const handleRegister = async () => {
     const email = ref5.current.value;
@@ -27,12 +33,18 @@ const Register = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/register", {
+      const payload = {
         username: ref1.current.value,
         password: ref2.current.value,
         role: ref4.current.value,
         email: ref5.current.value,
-      });
+      };
+
+      if (isDoctor) {
+        payload.specialization = specializationRef.current.value;
+      }
+
+      const res = await axios.post("http://localhost:8080/api/auth/register", payload);
 
       const { message } = res.data;
       alert(message);
@@ -59,26 +71,41 @@ const Register = () => {
         <input type="password" id="confirm-password" placeholder="Confirm Password" ref={ref3} />
         <br />
 
-        <select id="role" ref={ref4} defaultValue="PATIENT">
-          <option value="ADMIN">Admin</option>
+        <select id="role" ref={ref4} defaultValue="PATIENT" onChange={handleRoleChange}>
           <option value="PATIENT">Patient</option>
           <option value="DOCTOR">Doctor</option>
         </select>
         <br />
 
+        {isDoctor && (
+          <>
+            <select id="specialization" ref={specializationRef}>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Neurology">Neurology</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="Dermatology">Dermatology</option>
+              {/* Add more specializations as needed */}
+            </select>
+            <br />
+          </>
+        )}
+
         <button onClick={handleRegister}>Register</button>
-        <br/>
+        <br />
         <span
           className="login-link"
           onClick={() => navigate("/")}
-          style={{ color: "darkblue", cursor: "pointer", textDecoration: "underline" ,padding:"2px"}}
+          style={{
+            color: "darkblue",
+            cursor: "pointer",
+            textDecoration: "underline",
+            padding: "2px",
+          }}
         >
           Already a user?
         </span>
-     
       </fieldset>
-
-      
     </div>
   );
 };

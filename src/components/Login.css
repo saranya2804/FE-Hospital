@@ -17,27 +17,23 @@
     margin: auto;
     padding: 20px;
     text-align: center;
-    background-color: rgba(30, 30, 30, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
   /* Heading styles */
   .login-container h2 {
-    color: var(--text-white);
+    color: var(--dark-gray);
     margin-bottom: 20px;
     font-size: 24px;
     font-weight: bold;
   }
-  
-  /* Form label styles */
-  .login-container label {
-    display: block;
-    color: var(--text-light);
-    text-align: left;
-    margin-bottom: 5px;
-    font-size: 14px;
+  .login-container legend{
+    color: var(--dark-gray);
   }
+  /* Form label styles */
+  
   
   /* Input field styles */
   .login-container input[type="text"],
@@ -56,17 +52,18 @@
   /* Button styles */
   .login-container button {
     padding: 10px 20px;
-    background-color: var(--blue);
+    background-color: var(--dark-blue);
     color: var(--text-white);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    width: 100%;
   }
   
   .login-container button:hover {
-    background-color: var(--dark-blue);
+    background-color: var(--blue);
   }
   
   /* Success and error message styles */

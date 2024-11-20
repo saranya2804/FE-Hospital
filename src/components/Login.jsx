@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import "./login.css"; 
+import "./login.css";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -33,31 +33,51 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-        <a onClick={navigateToRegister} style={{ cursor: "pointer" }}>New User?</a>
-      </form>
+      <fieldset>
+        <legend>Login</legend>
+
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+         
+
+          <button type="submit">Login</button>
+        </form>
+
+        <span
+          className="register-link"
+          onClick={navigateToRegister}
+          style={{
+            color: "darkblue",
+            cursor: "pointer",
+            textDecoration: "underline",
+            padding: "2px",
+          }}
+        >
+          New User?
+        </span>
+      </fieldset>
+
       {response && <p className="success">{response}</p>}
       {error && <p className="error">{error}</p>}
     </div>

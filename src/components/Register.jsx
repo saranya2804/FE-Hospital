@@ -45,25 +45,20 @@ const Register = () => {
   return (
     <div className="register-container">
       <fieldset>
-        <legend>Registration Form</legend>
+        <legend>Registration</legend>
 
-        <label htmlFor="username">Username:</label>
         <input type="text" id="username" placeholder="Enter Username" ref={ref1} />
         <br />
 
-        <label htmlFor="email">Email:</label>
         <input type="email" id="email" placeholder="Enter Email" ref={ref5} />
         <br />
 
-        <label htmlFor="password">Password:</label>
         <input type="password" id="password" placeholder="Enter Password" ref={ref2} />
         <br />
 
-        <label htmlFor="confirm-password">Confirm Password:</label>
         <input type="password" id="confirm-password" placeholder="Confirm Password" ref={ref3} />
         <br />
 
-        <label htmlFor="role">Role:</label>
         <select id="role" ref={ref4} defaultValue="PATIENT">
           <option value="ADMIN">Admin</option>
           <option value="PATIENT">Patient</option>
@@ -72,7 +67,18 @@ const Register = () => {
         <br />
 
         <button onClick={handleRegister}>Register</button>
+        <br/>
+        <span
+          className="login-link"
+          onClick={() => navigate("/")}
+          style={{ color: "darkblue", cursor: "pointer", textDecoration: "underline" ,padding:"2px"}}
+        >
+          Already a user?
+        </span>
+     
       </fieldset>
+
+      
     </div>
   );
 };

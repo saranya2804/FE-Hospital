@@ -32,6 +32,8 @@ const Login = () => {
   };
 
   return (
+    <>
+    
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
@@ -61,6 +63,7 @@ const Login = () => {
       {response && <p className="success">{response}</p>}
       {error && <p className="error">{error}</p>}
     </div>
+    </>
   );
 };
 

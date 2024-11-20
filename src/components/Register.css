@@ -1,106 +1,102 @@
-/* Color variables for easy maintenance */
-:root {
-    --dark-gray: #1e1e1e;
-    --medium-gray: #333;
-    --light-gray: #444;
-    --blue: #007BFF;
-    --dark-blue: #0056b3;
-    --text-light: #dcdcdc;
-    --text-white: #ffffff;
-    --success-green: lightgreen;
-    --error-red: red;
+/* General Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  width: 100%;
+  height: 100%;
+}
+
+.register-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.register-container fieldset {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.register-container legend {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.register-container input,
+.register-container select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.register-container input:focus,
+.register-container select:focus {
+  border-color: #4CAF50;
+}
+
+.register-container button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+.register-container button:hover {
+  background-color: #45a049;
+}
+
+.register-container .login-link {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+  margin-top: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Responsiveness for Mobile */
+@media (max-width: 768px) {
+  .register-container fieldset {
+      width: 90%;
   }
-  
-  /* General container styles for Register */
-  .register-container {
-    max-width: 700px;
-    margin: auto;
-    padding: 20px;
-    text-align: center;
-    background-color: rgba(255, 254, 254, 0.8);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Heading styles */
-  .register-container h2 {
-    color: var(--dark-gray);
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  .register-container legend{
-    color: var(--dark-gray);
-  }
-  /* Form label styles */
-  .register-container label {
-    display: block;
-    color: var(--dark-gray);
-    text-align: left;
-    margin-bottom: 5px;
-    font-size: 14px;
-  }
-  
-  /* Input field styles */
-  .register-container input[type="text"],
-  .register-container input[type="password"],
-  .register-container input[type="number"],
-  .register-container input[type="email"],
+
+  .register-container input,
   .register-container select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid var(--light-gray);
-    border-radius: 4px;
-    background-color: var(--medium-gray);
-    color: var(--text-white);
-    font-size: 14px;
-    box-sizing: border-box;
+      font-size: 14px;
+      padding: 10px;
   }
-  
-  /* Button styles */
+
   .register-container button {
-    padding: 10px 20px;
-    background-color: var(--dark-blue);
-    color: var(--text-white);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    width: 100%;
+      font-size: 14px;
+      padding: 10px;
   }
-  
-  .register-container button:hover {
-    background-color: var(--blue);
-  }
-  
-  /* Success and error message styles */
-  .register-container p {
-    font-size: 14px;
-    margin-top: 10px;
-  }
-  
-  .register-container p.success {
-    color: var(--success-green);
-  }
-  
-  .register-container p.error {
-    color: var(--error-red);
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .register-container {
-      padding: 15px;
-    }
-  
-    .register-container h2 {
-      font-size: 20px;
-    }
-  
-    .register-container button {
-      width: 100%;
-    }
-  }
-  
+}

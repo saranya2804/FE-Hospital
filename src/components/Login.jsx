@@ -24,7 +24,7 @@ const Login = () => {
       setResponse(res.data.message); // Success message from ApiResponse
       localStorage.setItem("token", res.data.token); // Store token for session
       setError("");
-      navigate("/dashboard"); // Redirect to dashboard after successful login
+      navigate("/doctor"); // Redirect to dashboard after successful login
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
       setResponse("");

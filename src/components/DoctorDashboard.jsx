@@ -57,6 +57,9 @@ const DoctorDashboard = () => {
         <h3>Total Appointments</h3>
         <p>{appointmentCount}</p>
       </div>
+      <div>
+        
+      </div>
     </div>
     </div>
   );

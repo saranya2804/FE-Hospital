@@ -49,6 +49,9 @@ const DoctorDashboard = () => {
         </div>
       </div>
       <div className="DashboardContent">
+        <div className="title">
+          <h2>Welcome Dr!</h2>
+        </div>
       <div className="TotalPatients">
         <h3>Total Patients</h3>
         <p>{patientCount}</p>

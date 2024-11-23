@@ -2,7 +2,9 @@
 
 * {
 	font-family: "Varela Round", sans-serif;
-}
+} 
+
+
 #super-container {
 	width: 100%;
 	background: #000046; /* fallback for old browsers */
@@ -10,15 +12,15 @@
 		to right,
 		#1cb5e0,
 		#000046
-	); /* Chrome 10-25, Safari 5.1-6 */
+	);  Chrome 10-25, Safari 5.1-6 
 	background: linear-gradient(
 		to right,
 		#1cb5e0,
 		#000046
 	); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 	padding-bottom: 10%;
-}
-.parent-container {
+} 
+ .parent-container {
 	width: 60%;
 	height: 60%;
 	margin: 0 auto;
@@ -317,4 +319,4 @@
 	#submit {
 		margin: 5% auto auto auto;
 	}
-}
+} 

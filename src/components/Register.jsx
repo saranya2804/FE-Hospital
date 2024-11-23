@@ -1,111 +1,105 @@
-/* eslint-disable no-unused-vars */
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
-import "./Register.css";
+import { useNavigate } from "react-router-dom";
+import "./register.css";
 
 const Register = () => {
-  const navigate = useNavigate();
-  const ref1 = useRef(null); // Username
-  const ref2 = useRef(null); // Password
-  const ref3 = useRef(null); // Confirm Password
-  const ref4 = useRef(null); // Role (dropdown)
-  const ref5 = useRef(null); // Email
-  const specializationRef = useRef(null); // Specialization (dropdown)
-  const [isDoctor, setIsDoctor] = useState(false); // Track if Doctor is selected
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    role: "PATIENT", // Default role
+    email: "",
+    specialization: "",
+    contact: "",
+  });
 
-  const handleRoleChange = (event) => {
-    setIsDoctor(event.target.value === "DOCTOR");
+  const [response, setResponse] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = async () => {
-    const email = ref5.current.value;
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-
-    if (ref2.current.value !== ref3.current.value) {
-      alert("Passwords do not match!");
-      return;
-    }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const payload = {
-        username: ref1.current.value,
-        password: ref2.current.value,
-        role: ref4.current.value,
-        email: ref5.current.value,
-      };
-
-      if (isDoctor) {
-        payload.specialization = specializationRef.current.value;
-      }
-
-      const res = await axios.post("http://localhost:8080/api/auth/register", payload);
-
-      const { message } = res.data;
-      alert(message);
-      navigate("/"); // Redirect to login after successful registration
+      const res = await axios.post("http://localhost:8080/api/auth/register", formData);
+      setResponse(res.data.message);
+      setError("");
+      navigate("/login"); // Navigate to login after successful registration
     } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
+      setError(err.response?.data?.message || "Registration failed");
+      setResponse("");
     }
   };
 
   return (
     <div className="register-container">
-      <fieldset>
-        <legend>Registration</legend>
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="username"
+          placeholder="Enter Username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
 
-        <input type="text" id="username" placeholder="Enter Username" ref={ref1} />
-        <br />
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
 
-        <input type="email" id="email" placeholder="Enter Email" ref={ref5} />
-        <br />
-
-        <input type="password" id="password" placeholder="Enter Password" ref={ref2} />
-        <br />
-
-        <input type="password" id="confirm-password" placeholder="Confirm Password" ref={ref3} />
-        <br />
-
-        <select id="role" ref={ref4} defaultValue="PATIENT" onChange={handleRoleChange}>
-          <option value="PATIENT">Patient</option>
+        <select
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+          required
+        >
           <option value="DOCTOR">Doctor</option>
+          <option value="PATIENT">Patient</option>
         </select>
-        <br />
 
-        {isDoctor && (
-          <>
-            <select id="specialization" ref={specializationRef}>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Neurology">Neurology</option>
-              <option value="Pediatrics">Pediatrics</option>
-              <option value="Orthopedics">Orthopedics</option>
-              <option value="Dermatology">Dermatology</option>
-              {/* Add more specializations as needed */}
-            </select>
-            <br />
-          </>
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        {formData.role === "DOCTOR" && (
+          <input
+            type="text"
+            name="specialization"
+            placeholder="Enter Specialization"
+            value={formData.specialization}
+            onChange={handleChange}
+            required
+          />
         )}
 
-        <button onClick={handleRegister}>Register</button>
-        <br />
-        <span
-          className="login-link"
-          onClick={() => navigate("/login")}
-          style={{
-            color: "darkblue",
-            cursor: "pointer",
-            textDecoration: "underline",
-            padding: "2px",
-          }}
-        >
-          Already a user?
-        </span>
-      </fieldset>
+        <input
+          type="text"
+          name="contact"
+          placeholder="Enter Contact Number"
+          value={formData.contact}
+          onChange={handleChange}
+          required
+        />
+
+        <button type="submit">Register</button>
+      </form>
+
+      {response && <p className="success">{response}</p>}
+      {error && <p className="error">{error}</p>}
     </div>
   );
 };

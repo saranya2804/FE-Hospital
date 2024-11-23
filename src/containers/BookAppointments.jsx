@@ -1,35 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Axios from "axios";
 import Navbar from "../components/navbar";
 import logo from "../assets/imgs/Doctor_20.png";
 import "../assets/css/bookappointment.css";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import PatientSidebar from "../components/PatientSidebar";
 
 const BookAppointments = () => {
-	const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState("BookAppointments");
+  const navigate = useNavigate();
   const [appointment, setAppointment] = useState({
-    accepted: false, // Default accepted status
     date: "",
-    completed: false, // Default completed status
-    fee: 0, // Add fee
-    doctorId: "", // Add doctorId
+    doctorId: "",
+    fee: 1000,
     slot: "",
+    healthIssue: "",
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(""); // To display success or error messages
+  const [message, setMessage] = useState("");
+  const [doctors, setDoctors] = useState([]);
+  const [availableDates, setAvailableDates] = useState([]); // Available dates
+  const [availableSlots, setAvailableSlots] = useState([]); // Slots for selected date
 
+  // Fetch doctors from the backend
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await Axios.get("http://localhost:8080/api/doctors/all");
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      }
+    };
+    fetchDoctors();
+  }, []);
+
+  // Fetch available slots and dates for the selected doctor
+  useEffect(() => {
+    const fetchAvailableSlotsAndDates = async () => {
+      if (appointment.doctorId) {
+        try {
+          const response = await Axios.get(
+            `http://localhost:8080/api/doctors/getAvailableSlotsAndDate/${appointment.doctorId}`
+          );
+          console.log("Available Slots and Dates:", response.data);
+
+          // Extract unique dates and set available dates
+          const dates = [...new Set(response.data.map((slot) => slot.date))];
+          setAvailableDates(dates);
+
+          // Clear slots when doctor changes
+          setAvailableSlots([]);
+          setAppointment({ ...appointment, date: "", slot: "" });
+        } catch (error) {
+          console.error("Error fetching available slots and dates:", error);
+        }
+      }
+    };
+    fetchAvailableSlotsAndDates();
+  }, [appointment.doctorId]);
+
+  // Update available slots when a date is selected
+  useEffect(() => {
+    const filterSlotsForSelectedDate = async () => {
+      if (appointment.date) {
+        try {
+          // Assuming availableSlotsAndDates is already fetched
+          const response = await Axios.get(
+            `http://localhost:8080/api/doctors/getAvailableSlotsAndDate/${appointment.doctorId}`
+          );
+
+          // Filter slots for the selected date
+          const slots = response.data.filter(
+            (slot) => slot.date === appointment.date
+          );
+          setAvailableSlots(slots);
+        } catch (error) {
+          console.error("Error filtering slots:", error);
+        }
+      }
+    };
+    filterSlotsForSelectedDate();
+  }, [appointment.date]);
+
+  // Handle appointment submission
   const onMakeAppointment = async (e) => {
     e.preventDefault();
 
-    if (!appointment.date || !appointment.slot || !appointment.doctorId) {
+    if (!appointment.date || !appointment.slot || !appointment.doctorId || !appointment.healthIssue) {
       window.alert("Please fill in all fields.");
       return;
     }
 
-    // Get user information from localStorage
     const userId = localStorage.getItem("uid");
-    console.log(userId);
-
     if (!userId) {
       setMessage("User is not authenticated. Please log in.");
       return;
@@ -37,44 +101,39 @@ const BookAppointments = () => {
 
     setLoading(true);
     try {
-      // Fetch patientId from the backend using userId
-      const patientResponse = await Axios.get(`http://localhost:8080/patients/byUserId/${userId}`);
-      const patientId = patientResponse.data.id; // Assuming the patient object contains an 'id' field
+      const { data: patientData } = await Axios.get(
+        `http://localhost:8080/patients/byUserId/${userId}`
+      );
 
-      const slotTimes = {
-        "1": "7AM - 10AM",
-        "2": "12PM - 4PM",
-        "3": "6PM - 11PM",
-      };
-
-      // Send the request with all necessary fields
+      const patientId = patientData?.id;
       const response = await Axios.post("http://localhost:8080/api/appointments", {
-        appointmentDate: appointment.date, // Send the date
-        patientId: patientId, // Pass the patientId fetched from the backend
-        doctorId: appointment.doctorId, // Add doctorId
-        fee: appointment.fee, // Add fee
-        status: "Pending", // Default status as Pending
-        accepted: appointment.accepted, // Add accepted status
-        completed: appointment.completed, // Add completed status
-        slot: slotTimes[appointment.slot], // Map slot to time range
+        appointmentDate: appointment.date,
+        patientId: patientId,
+        doctorId: appointment.doctorId,
+        fee: appointment.fee,
+        status: "Pending",
+        accepted: false,
+        completed: false,
+        slot: appointment.slot,
+        healthIssue: appointment.healthIssue,
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         setMessage("Appointment successfully scheduled!");
         setAppointment({
           date: "",
           slot: "",
-          doctorId: "", // Reset doctorId
-          fee: 0, // Reset fee
-          accepted: false, // Reset accepted
-          completed: false, // Reset completed
+          doctorId: "",
+          fee: 1000,
+          healthIssue: "",
         });
-		navigate('/appointmentpage')
+        navigate("/appointmentpage");
+      } else {
+        setMessage("Appointment scheduling failed.");
       }
     } catch (error) {
       console.error("Error making appointment:", error);
-      // Improved error handling with response data
-      const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
+      const errorMessage = error.response?.data?.message || " This Slot is not Available";
       setMessage(errorMessage);
     } finally {
       setLoading(false);
@@ -82,82 +141,101 @@ const BookAppointments = () => {
   };
 
   return (
-    <div id="super-container">
-      <Navbar />
-      <div className="parent-container">
-        <form id="appointment-container" onSubmit={onMakeAppointment}>
-          <img src={logo} alt="Health Insurance" className="logo" />
-          <div className="input-container">
-            <i className="fa fa-calendar-check icon"></i>
-            <input
-              id="dateinput"
-              type="date"
-              name="date"
-              value={appointment.date}
-              required
-              onChange={(e) => setAppointment({ ...appointment, date: e.target.value })}
-              className="input-field"
-            />
+    <div className="dashboard-container">
+      <PatientSidebar setActiveSection={setActiveSection} />
+      <div className="DashboardContent">
+        <div id="super-container">
+          <div className="parent-container">
+            <form id="appointment-container" onSubmit={onMakeAppointment}>
+              <img src={logo} alt="Health Insurance" className="logo" />
+              <div className="input-container">
+                <i className="fa fa-user-md icon"></i>
+                <select
+                  id="doctorDropdown"
+                  value={appointment.doctorId}
+                  required
+                  onChange={(e) =>
+                    setAppointment({ ...appointment, doctorId: e.target.value })
+                  }
+                  className="input-field"
+                >
+                  <option value="">-- Select a Doctor --</option>
+                  {doctors.map((doctor) => (
+                    <option key={doctor.id} value={doctor.id}>
+                      {doctor.name} - {doctor.specialization}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {availableDates.length > 0 && (
+                <div className="input-container">
+                  <i className="fa fa-calendar-check icon"></i>
+                  <select
+                    id="dateDropdown"
+                    value={appointment.date}
+                    required
+                    onChange={(e) =>
+                      setAppointment({ ...appointment, date: e.target.value })
+                    }
+                    className="input-field"
+                  >
+                    <option value="">-- Select a Date --</option>
+                    {availableDates.map((date) => (
+                      <option key={date} value={date}>
+                        {date}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {availableSlots.length > 0 && (
+                <div className="radio-container">
+                  <h3 className="radio-container-head">Choose Time Slot</h3>
+                  <div className="radio-options">
+                    {availableSlots.map((slot) => (
+                      <label key={slot.id}>
+                        <input
+                          className="radio"
+                          type="radio"
+                          name="slot"
+                          value={slot.timeSlot}
+                          checked={appointment.slot === slot.timeSlot}
+                          onChange={(e) =>
+                            setAppointment({ ...appointment, slot: e.target.value })
+                          }
+                        />
+                        <span className="radio-text">{slot.timeSlot}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="input-container">
+                <i className="fa fa-stethoscope icon"></i>
+                <textarea
+                  id="healthIssue"
+                  name="healthIssue"
+                  value={appointment.healthIssue}
+                  required
+                  onChange={(e) =>
+                    setAppointment({ ...appointment, healthIssue: e.target.value })
+                  }
+                  className="input-field"
+                  placeholder="Describe your health issue"
+                />
+              </div>
+              <button
+                id="submit"
+                type="submit"
+                className="submit-btn"
+                disabled={loading}
+              >
+                {loading ? "Booking..." : "Book Appointment"}
+              </button>
+            </form>
+            {message && <div className="message">{message}</div>}
           </div>
-          <div className="input-container">
-            <i className="fa fa-user-md icon"></i>
-            <input
-              id="doctorinput"
-              type="number"
-              name="doctorId"
-              value={appointment.doctorId}
-              required
-              onChange={(e) => setAppointment({ ...appointment, doctorId: e.target.value })}
-              className="input-field"
-              placeholder="Doctor ID"
-            />
-          </div>
-          <div className="input-container">
-            <i className="fa fa-money icon"></i>
-            <input
-              id="feeinput"
-              type="number"
-              name="fee"
-              value={appointment.fee}
-              required
-              onChange={(e) => setAppointment({ ...appointment, fee: e.target.value })}
-              className="input-field"
-              placeholder="Fee"
-            />
-          </div>
-          <div className="radio-container">
-            <h3 className="radio-container-head">Choose Time Slot</h3>
-            <div className="radio-options">
-              {[1, 2, 3].map((slot) => (
-                <label key={slot}>
-                  <input
-                    className="radio"
-                    type="radio"
-                    name="slot"
-                    value={slot}
-                    checked={appointment.slot === String(slot)}
-                    onChange={(e) => setAppointment({ ...appointment, slot: e.target.value })}
-                  />
-                  <span className="radio-text">{slot}</span>
-                </label>
-              ))}
-            </div>
-            <div className="slots-desc">
-              <span>(1) 7AM - 10AM</span>
-              <span>(2) 12PM - 4PM</span>
-              <span>(3) 6PM - 11PM</span>
-            </div>
-          </div>
-          <button
-            id="submit"
-            type="submit"
-            className="submit-btn"
-            disabled={loading}
-          >
-            {loading ? "Booking..." : "Book Appointment"}
-          </button>
-        </form>
-        {message && <div className="message">{message}</div>} {/* Display message */}
+        </div>
       </div>
     </div>
   );

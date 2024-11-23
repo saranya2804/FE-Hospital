@@ -5,7 +5,7 @@
   text-align: center;
 }
 body {
-  background-image: url('./assets/Stethoscope.gif'); /* Adjust path if necessary */
+  background-image: url('C:/Users/91799/OneDrive/Desktop/FE-Hospital(LAST)/FE-Hospital-Last/FE-Hospital-Last/FE-Hospital/src/assets/imgs/pexels-shkrabaanthony-5214962.jpg'); /* Adjust path if necessary */
   background-size: cover; /* Ensures the image covers the entire screen */
   background-repeat: no-repeat; /* Prevents repeating the image */
   background-attachment: fixed; /* Keeps the image fixed during scrolling */

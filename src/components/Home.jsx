@@ -63,6 +63,7 @@ const HomePage = () => {
 				<h4 className="appointment-heading">
 					Hassle-free, book an appointment with our system online!
 				</h4>
+				<br></br>
 				<button className="book-appointment-btn" onClick={onAppointmentBook}>
 					Login to Book
 				</button>

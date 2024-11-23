@@ -3,28 +3,43 @@ body {
 	font-family: 'Arial', sans-serif;
 	margin: 0;
 	padding: 0;
-	background-color: #f4f4f4;
-}
-
-h1, h4 {
-	color: #333;
+	background-color: rgba(30, 30, 30, 0.1);
+  }
+  .book-appointment-btn{
+	display: flex;
+	align-items: center;
+  }
+  
+  h1, h4 {
+	color: #060000;
 	text-align: center;
-}
-
-#services {
+	font-size: large;
+  }
+  
+  #services {
 	padding: 50px 0;
-	background-color: #fff;
-    width: 100vw;
-}
-
-.service-container {
+	width: 100vw;
+	gap: 20px;
+	
+  }
+  
+  #services-head {
+	font-size: 32px;
+	font-weight: bold;
+	color: #1961a0; /* Highlighted color for the heading */
+	margin-bottom: 30px;
+  }
+  
+  .service-container {
 	display: flex;
 	justify-content: center;
 	gap: 20px;
 	flex-wrap: wrap;
-}
-
-.service-card {
+	gap: 20px; /* Spacing between service cards in the same container */
+	margin-bottom: 40px;
+  }
+  
+  .service-card {
 	background-color: #fff;
 	padding: 30px;
 	border-radius: 10px;
@@ -32,31 +47,34 @@ h1, h4 {
 	width: 200px;
 	text-align: center;
 	transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.service-card:hover {
+	
+  }
+  
+  .service-card:hover {
 	transform: translateY(-10px);
 	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-}
-
-.service-icon {
-	color: #4CAF50;
+  }
+  
+  .service-icon {
+	color: #1961a0;
 	font-size: 3em;
-}
-
-#book-appointment {
+  }
+  
+  #book-appointment {
 	padding: 50px 20px;
 	text-align: center;
 	background-color: #fff;
-}
-
-.appointment-heading {
-	font-size: 24px;
-	color: #555;
-}
-
-.book-appointment-btn {
-	background-color: #4CAF50;
+  }
+  
+  .appointment-heading h4{
+	font-size: 40px;
+	color: #000000;
+	margin-bottom: 20px;
+	
+  }
+  
+  .book-appointment-btn {
+	background-color: #1961a0;
 	color: white;
 	border: none;
 	padding: 15px 30px;
@@ -64,16 +82,41 @@ h1, h4 {
 	border-radius: 5px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
-    justify-content: center;
-}
-
-.book-appointment-btn:hover {
-	background-color: #45a049;
-}
-
-@media (max-width: 768px) {
+  }
+  .appointment-section{
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+  }
+  
+  .book-appointment-btn:hover {
+	background-color: #6eb9e4;
+  }
+  
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
 	.service-container {
-		flex-direction: column;
-		align-items: center;
+	  flex-direction: column;
+	  align-items: center;
 	}
-}
+  
+	.service-card {
+	  width: 90%;  /* Makes the cards more responsive on smaller screens */
+	  margin-bottom: 20px;
+	}
+  
+	#services-head {
+	  font-size: 28px;
+	}
+  
+	.appointment-heading {
+	  font-size: 20px;
+	}
+  
+	.book-appointment-btn {
+	  width: 100%; /* Make button responsive */
+	  padding: 12px 20px;
+	}
+  }
+  

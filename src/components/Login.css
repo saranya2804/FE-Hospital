@@ -1,136 +1,123 @@
-/* General Styling */
+/* Color variables for easy maintenance */
+:root {
+  --dark-gray: #1e1e1e;
+  --medium-gray: #333;
+  --light-gray: #444;
+  --blue: #007BFF;
+  --dark-blue: #0056b3;
+  --text-light: #dcdcdc;
+  --text-white: #ffffff;
+  --success-green: lightgreen;
+  --error-red: red;
+}
+
+/* Body styling */
 body {
-  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;      /* Centers vertically */
+  min-height: 100vh;        /* Ensures the body takes full height */
   margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-  width: 100%;
-  height: 100%;
+  background-image: url('C:/Users/91799/OneDrive/Desktop/FE-Hospital(LAST)/FE-Hospital-Last/FE-Hospital-Last/FE-Hospital/src/assets/imgs/pexels-shkrabaanthony-5214962.jpg');
+  background-size: cover;   /* Ensures the image covers the entire screen */
+  background-repeat: no-repeat; /* Prevents repeating the image */
+  background-attachment: fixed;
 }
 
-#super-container {
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f4f4f4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* Login container styles */
+.login-container {
+  max-width: 900px;          /* Match the register container */
+  width: 100%;               /* Ensure responsiveness */
   padding: 20px;
-  box-sizing: border-box;
-}
-
-.parent-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-#login-container {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-#login-container img {
-  width: 120px;
-  margin-bottom: 20px;
-}
-
-.input-container {
-  position: relative;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.input-container input {
-  width: 100%;
-  padding: 12px 40px; /* Adjusted for icon space */
-  font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  outline: none;
-  transition: border-color 0.3s;
-  box-sizing: border-box;
-}
-
-.input-container input:focus {
-  border-color: #4CAF50;
-}
-
-.input-container .icon {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  font-size: 18px;
-  color: #777;
-  transform: translateY(-50%);
-}
-
-#Incorrect-credentials {
-  color: red;
-  display: none;
-  font-size: 14px;
   text-align: center;
-  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.5); /* Slightly less transparent like register */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Centers the content */
 }
 
-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px;
-  font-size: 16px;
+/* Heading styles */
+.login-container h2 {
+  color: var(--dark-gray);
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Input field styles */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  width: 90%;                /* Match register container width */
+  max-width: 800px;          /* Limits input width */
+  padding: 12px;             /* Increased padding for more space */
+  margin: 10px 0;            /* Even vertical spacing */
+  border: 1px solid var(--light-gray);
+  border-radius: 5px;
+  background-color: var(--medium-gray);
+  color: var(--text-white);
+  font-size: 16px;           /* Slightly increased font size */
+  box-sizing: border-box;
+}
+
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+  border-color: var(--blue); /* Focus effect */
+  outline: none;
+}
+
+/* Button styles */
+.login-container button {
+  padding: 12px 20px;         /* Adjusted padding */
+  background-color: var(--dark-blue);
+  color: var(--text-white);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
-  margin-bottom: 15px;
-  transition: background-color 0.3s ease-in-out;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  width: 90%;                 /* Match inputs width */
+  max-width: 400px;           /* Limits button width */
   box-sizing: border-box;
 }
 
-button:hover {
-  background-color: #45a049;
+.login-container button:hover {
+  background-color: var(--blue);
 }
 
-span.spantext {
+/* Error message styles */
+.login-container p#Incorrect-credentials {
   font-size: 14px;
-  color: #777;
-  margin-bottom: 10px;
-  text-align: center;
+  color: var(--error-red);
+  margin-top: 10px;
 }
 
-button#lastbtn {
-  background-color: #f0f0f0;
-  color: #4CAF50;
-  border: 2px solid #4CAF50;
-}
-
-button#lastbtn:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-
-/* Responsiveness for Mobile */
+/* Responsive styles */
 @media (max-width: 768px) {
-  #login-container {
-      width: 90%; /* Use a more fluid width for smaller screens */
+  .login-container {
+    padding: 15px; /* Reduced padding for smaller screens */
   }
 
-  .input-container input {
-      font-size: 14px;
-      padding: 10px 35px;
+  .login-container h2 {
+    font-size: 20px; /* Slightly smaller font for smaller screens */
   }
 
-  button {
-      font-size: 14px;
-      padding: 10px;
+  /* Adjust input fields */
+  .login-container input[type="text"],
+  .login-container input[type="password"] {
+    padding: 10px; /* Reduce padding for smaller screens */
+    font-size: 14px; /* Smaller font size */
+    width: 90%; /* Slightly wider inputs on small screens */
+    max-width: 300px; /* Limits the input width */
+  }
+
+  /* Adjust button */
+  .login-container button {
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 14px; /* Smaller font size */
+    width: 90%; /* Same width as inputs */
+    max-width: 300px; /* Limits button width */
   }
 }

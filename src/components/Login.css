@@ -18,7 +18,7 @@ body {
   align-items: center;      /* Centers vertically */
   min-height: 100vh;        /* Ensures the body takes full height */
   margin: 0;
-  background-image: url('C:/Users/91799/OneDrive/Desktop/FE-Hospital(LAST)/FE-Hospital-Last/FE-Hospital-Last/FE-Hospital/src/assets/imgs/pexels-shkrabaanthony-5214962.jpg');
+  background-image: url('C:/Users/91799/OneDrive/Desktop/Hospital Management System/FE-Hospital(LAST)/FE-Hospital-Last/FE-Hospital-Last/FE-Hospital/src/assets/imgs/pexels-shkrabaanthony-5214962.jpg');
   background-size: cover;   /* Ensures the image covers the entire screen */
   background-repeat: no-repeat; /* Prevents repeating the image */
   background-attachment: fixed;

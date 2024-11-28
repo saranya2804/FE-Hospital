@@ -54,43 +54,129 @@ const AdminDashboard = () => {
     if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
   
     try {
+      // Construct the URL dynamically based on type and ID
+      const url = `http://localhost:8080/api/admin/${type.toLowerCase()}s/${id}`;
+      console.log(`Attempting DELETE request to: ${url}`);
+  
+      // Perform the DELETE request
+      await axios.delete(url);
+  
+      // Update the relevant state based on the type
       if (type === "Appointment") {
-        await axios.delete(`http://localhost:8080/api/admin/appointments/${id}`);
         fetchAppointments();
       } else if (type === "Patient") {
-        await axios.delete(`http://localhost:8080/api/admin/patients/${id}`);
         fetchPatients();
       } else if (type === "Doctor") {
-        await axios.delete(`http://localhost:8080/api/admin/doctors/${id}`);
         fetchDoctors();
       }
+  
       alert(`${type} deleted successfully!`);
     } catch (error) {
-      console.error(`Error deleting ${type}:`, error);
-      alert(`Failed to delete ${type}`);
+      if (error.response) {
+        console.error(`Error response:`, error.response.data);
+        alert(`Error: ${error.response.data.message || "Failed to delete data"}`);
+      } else {
+        console.error(`Error deleting ${type}:`, error.message);
+        alert("Failed to delete data");
+      }
     }
   };
+  
+  
 
-  const handleSave = async (type, id) => {
-    try {
-      let response;
-      if (type === "Appointment") {
-        response = await axios.put(`http://localhost:8080/api/admin/appointments/${id}`, editData);
-        fetchAppointments();
-      } else if (type === "Patient") {
-        response = await axios.put(`http://localhost:8080/api/admin/patients/${id}`, editData);
-        fetchPatients();
-      } else if (type === "Doctor") {
-        response = await axios.put(`http://localhost:8080/api/admin/doctors/${id}`, editData);
-        fetchDoctors();
-      }
-      alert("Data updated successfully!");
-      setEditData(null);  // Reset after saving
-    } catch (error) {
-      console.error("Error saving data:", error);
+  const transformEditData = (type, editData) => {
+  if (!editData) return null;
+
+  switch (type) {
+    case "Appointment":
+      return {
+        id: editData.id,
+        appointmentDate: editData.appointmentDate,
+        fee: parseFloat(editData.fee),
+        status: editData.status,
+        slot: editData.slot,
+        healthIssue: editData.healthIssue,
+        prescription: editData.prescription || null,
+        doctorname: editData.doctorname,
+        patientname: editData.patientname,
+        doctor: {
+          id: editData.doctorId, // Backend expects doctor as an object with id
+        },
+        patient: {
+          id: editData.patientId, // Backend expects patient as an object with id
+        },
+      };
+
+    case "Doctor":
+      return {
+        id: editData.id,
+        name: editData.name,
+        specialization: editData.specialization,
+        email: editData.email,
+        contact: parseInt(editData.contact),
+        user: {
+          id: editData.userId || null, // If user ID exists
+          username: editData.username || null,
+          password: editData.password || null,
+          email: editData.email,
+          role: "DOCTOR",
+          specialization: editData.specialization,
+          contact: parseInt(editData.contact),
+        },
+      };
+
+    case "Patient":
+      return {
+        id: editData.id,
+        name: editData.name,
+        email: editData.email,
+        contact: parseInt(editData.contact),
+        user: {
+          id: editData.userId || null, // If user ID exists
+          username: editData.username || null,
+          password: editData.password || null,
+          email: editData.email,
+          role: "PATIENT",
+          contact: parseInt(editData.contact),
+        },
+      };
+
+    default:
+      return editData;
+  }
+};
+
+const handleSave = async (type, id) => {
+  try {
+    const transformedData = transformEditData(type, editData);
+    console.log("Transformed Data for Save:", transformedData);
+
+    let response;
+    if (type === "Appointment") {
+      response = await axios.put(`http://localhost:8080/api/admin/appointments/${id}`, transformedData);
+      fetchAppointments();
+    } else if (type === "Patient") {
+      response = await axios.put(`http://localhost:8080/api/admin/patients/${id}`, transformedData);
+      fetchPatients();
+    } else if (type === "Doctor") {
+      response = await axios.put(`http://localhost:8080/api/admin/doctors/${id}`, transformedData);
+      fetchDoctors();
+    }
+
+    console.log("Save response:", response.data);
+    alert("Data updated successfully!");
+    setEditData(null);
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response:", error.response.data);
+      alert(`Error: ${error.response.data.message || "Failed to save data"}`);
+    } else {
+      console.error("Error saving data:", error.message);
       alert("Failed to save data");
     }
-  };
+  }
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,7 +198,7 @@ const AdminDashboard = () => {
             <th>Status</th>
             <th>Patient ID</th>
             <th>Doctor ID</th>
-            <th>Action</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -179,14 +265,7 @@ const AdminDashboard = () => {
                   appointment.doctorId
                 )}
               </td>
-              <td>
-                {editData && editData.id === appointment.id ? (
-                  <button className="save-button" onClick={() => handleSave("Appointment", appointment.id)}>Save</button>
-                ) : (
-                  <button className="edit-button" onClick={() => handleEdit("Appointment", appointment.id)}>Edit</button>
-                )}
-                <button className="delete-button" onClick={() => handleDelete("Appointment", appointment.id)}>Delete</button>
-              </td>
+              
             </tr>
           ))}
         </tbody>
